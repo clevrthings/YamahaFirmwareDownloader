@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yamaha Firmware Downloader</title>
+    <style>
+        body {
+            background-color: #121212; /* Dark background */
+            color: #E0E0E0; /* Light text */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #1E90FF; /* Blue header */
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #555;
+        }
+        th {
+            background-color: #333;
+        }
+        td {
+            background-color: #222;
+        }
+        a {
+            color: #1E90FF;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .timestamp {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .getintouch {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .counter-info {
+            text-align: center;
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #1E90FF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button-container button:hover {
+            background-color: #4682B4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Yamaha Firmware Downloader</h1>
+
+    {% if data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Device</th>
+                    <th>Version</th>
+                    <th>Download</th>
+                    <th>Downloads Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device, version, download_link in data %}
+                    <tr>
+                        <td>{{ device }}</td>
+                        <td>{{ version }}</td>
+                        <td><a href="{{ url_for('download', device=device) }}" target="_blank">Download</a></td>
+                        <td>{{ downloads_count.get(device, 0) }}</td> <!-- Show download count -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No data available. Press "Refresh" to load the firmware information.</p>
+    {% endif %}
+
+    {% if last_refreshed %}
+        <div class="timestamp">
+            <p>Last refreshed on: <span id="last-refreshed">{{ last_refreshed }} UTC</span></p>
+        </div>
+    {% endif %}
+
+    <div class="counter-info">
+        <p><strong>Visits:</strong> {{ visitors_count }}</p>
+    </div>
+
+    <div class="getintouch">
+        <p>Got feedback or ideas? <a href="mailto:info@clevrthings.com">Get in touch!</a> - Like the page? <a href="https://buymeacoffee.com/clevrthings" target="_blank">Buy me a coffee!</a></p>
+    </div>
+
+
+    <script>
+        // Convert the UTC timestamp to local timezone
+        const utcTimestamp = "{{ last_refreshed }}";  // Last refreshed time in ISO 8601 format
+        const localTime = new Date(utcTimestamp).toLocaleString();
+        document.getElementById("last-refreshed").innerText = localTime;
+    </script>
+</body>
+</html>
